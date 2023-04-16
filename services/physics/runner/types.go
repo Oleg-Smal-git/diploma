@@ -12,6 +12,8 @@ type (
 		Next()
 		// Freeze exports the current state of the simulation.
 		Freeze() State
+		// Restore sets the state of the simulation to one provided.
+		Restore(State)
 	}
 
 	// State represents an exhaustive description of physics state of the simulation.
