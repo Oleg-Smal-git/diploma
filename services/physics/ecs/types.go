@@ -1,5 +1,9 @@
 package ecs
 
+import (
+	"github.com/Oleg-Smal-git/diploma/services/physics/runner"
+)
+
 type (
 	// Chunk is a collection of Entity objects that have a certain set of Component flags.
 	// Entities within same chunk are referenced to as archetype.
@@ -22,17 +26,26 @@ type (
 	// in order to only alter / interact with entities that are meant to for respective systems,
 	// and information relevant for those systems.
 	Component interface {
+		// ID returns the ComponentID of the parent Component.
 		ID() ComponentID
+		// New allocates all the required memory for the Component.
+		New() Component
 	}
 
 	// ComponentID is an alias for uint8.
 	ComponentID uint8
 
 	// System contains the business logic of exactly ONE simulation rule.
+	// The specific implementations of System interface also contain
+	// buffers with pre-allocated memory for Component queries.
 	System interface {
 		// Archetype returns a minimal required bitset for the system.
 		Archetype() ComponentID
 		// Run performs one atomic step of the system logic.
 		Run(*Entity, *[]Entity)
+		// New allocates all the required memory for the System.
+		New() System
+		// Restore propagates simulation globals to child System objects.
+		Restore(runner.Globals)
 	}
 )

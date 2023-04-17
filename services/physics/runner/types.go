@@ -12,8 +12,8 @@ type (
 		Next()
 		// Freeze exports the current state of the simulation.
 		Freeze() State
-		// Restore sets the state of the simulation to one provided.
-		Restore(State)
+		// Restore sets the State and Globals of the simulation to one provided.
+		Restore(State, Globals)
 	}
 
 	// State represents an exhaustive description of physics state of the simulation.
@@ -27,6 +27,12 @@ type (
 	// Ball goes bounce :)
 	Ball struct {
 		X, Y           float64
+		Radius         float64
 		SpeedX, SpeedY float64
+	}
+
+	// Globals is a wrapper for all simulation config values, like frame duration.
+	Globals struct {
+		FrameDuration float64
 	}
 )

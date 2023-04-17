@@ -29,13 +29,15 @@ func NewECS(componentRegistrar []Component, archetypesRegistrar []ComponentID, s
 			chunk.Entities[i].Components = make(map[ComponentID]Component, len(componentRegistrar))
 			for _, c := range componentRegistrar {
 				if a&c.ID() == c.ID() {
-					chunk.Entities[i].Components[c.ID()] = c
+					// This is done in order to deep copy the interface value.
+					chunk.Entities[i].Components[c.ID()] = c.New()
 				}
 			}
 		}
 		for _, s := range systemRegistrar {
 			if a&s.Archetype() == s.Archetype() {
-				chunk.Systems = append(chunk.Systems, s)
+				// This is done in order to deep copy the interface value.
+				chunk.Systems = append(chunk.Systems, s.New())
 			}
 		}
 		ecs.chunks[a] = chunk
@@ -64,7 +66,7 @@ func (r *ECS) Freeze() runner.State {
 }
 
 // Restore sets the state of the simulation to one provided.
-func (r *ECS) Restore(state runner.State) {
+func (r *ECS) Restore(state runner.State, globals runner.Globals) {
 	// TODO: implement
 	panic("")
 }
