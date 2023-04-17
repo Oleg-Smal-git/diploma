@@ -1,6 +1,6 @@
 module github.com/Oleg-Smal-git/diploma
 
-go 1.18
+go 1.20
 
 require github.com/vmihailenco/msgpack v4.0.4+incompatible
 

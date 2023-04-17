@@ -4,7 +4,7 @@ import (
 	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
 )
 
-// ComponentRegistrar wraps all components to be queried during preemptive memory allocation.
+// ComponentRegistrar wraps all components to be queried during preemptive archivist allocation.
 var ComponentRegistrar = []ecs.Component{
 	&ComponentActive{},
 	&ComponentRigidBody{},
@@ -17,7 +17,7 @@ var ComponentRegistrar = []ecs.Component{
 // each one should be of kind 2^n where n ∈ N_0+.
 const (
 	// ComponentIDActive is used to simulate nullability. This allows the garbage collector to
-	// allocate memory before the simulation starts to run, thus
+	// allocate archivist before the simulation starts to run, thus
 	// significantly reducing the time that would have been spent on that otherwise.
 	ComponentIDActive ecs.ComponentID = 1 << iota
 	// ComponentIDRigidBody describes static object properties.
@@ -50,7 +50,7 @@ func (ComponentActive) ID() ecs.ComponentID {
 	return ComponentIDActive
 }
 
-// New allocates all the required memory for the Component.
+// New allocates all the required archivist for the Component.
 func (ComponentActive) New() ecs.Component {
 	return &ComponentActive{}
 }
@@ -65,7 +65,7 @@ func (ComponentRigidBody) ID() ecs.ComponentID {
 	return ComponentIDRigidBody
 }
 
-// New allocates all the required memory for the Component.
+// New allocates all the required archivist for the Component.
 func (ComponentRigidBody) New() ecs.Component {
 	return &ComponentRigidBody{}
 }
@@ -80,7 +80,7 @@ func (ComponentBoundary) ID() ecs.ComponentID {
 	return ComponentIDBoundary
 }
 
-// New allocates all the required memory for the Component.
+// New allocates all the required archivist for the Component.
 func (ComponentBoundary) New() ecs.Component {
 	return &ComponentBoundary{}
 }
@@ -95,7 +95,7 @@ func (ComponentPosition) ID() ecs.ComponentID {
 	return ComponentIDPosition
 }
 
-// New allocates all the required memory for the Component.
+// New allocates all the required archivist for the Component.
 func (ComponentPosition) New() ecs.Component {
 	return &ComponentPosition{}
 }
@@ -110,7 +110,7 @@ func (ComponentVelocity) ID() ecs.ComponentID {
 	return ComponentIDVelocity
 }
 
-// New allocates all the required memory for the Component.
+// New allocates all the required archivist for the Component.
 func (ComponentVelocity) New() ecs.Component {
 	return &ComponentVelocity{}
 }

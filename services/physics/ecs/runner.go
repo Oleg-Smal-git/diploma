@@ -1,21 +1,21 @@
 package ecs
 
 import (
-	"github.com/Oleg-Smal-git/diploma/services/physics/runner"
+	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
-// Confirm that ECS satisfies runner.Runner interface.
+// Confirm that ECS satisfies interfaces.Runner interface.
 // This will throw a compile error otherwise.
-var _ runner.Runner = (*ECS)(nil)
+var _ interfaces.Runner = (*ECS)(nil)
 
 // ECS stands for Entity Component System and is an architectural
-// pattern we will be using for this implementation of runner.Runner.
+// pattern we will be using for this implementation of interfaces.interfaces.
 type ECS struct {
 	chunks []Chunk
 }
 
-// NewECS constructs an ECS object.
-func NewECS(componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System) ECS {
+// NewRunner constructs an ECS object.
+func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System) *ECS {
 	ecs := ECS{
 		chunks: make([]Chunk, 0, len(archetypesRegistrar)),
 	}
@@ -42,7 +42,7 @@ func NewECS(componentRegistrar []Component, archetypesRegistrar []ComponentID, s
 		}
 		ecs.chunks[a] = chunk
 	}
-	return ecs
+	return &ecs
 }
 
 // Next performs one atomic step of the simulation.
@@ -60,13 +60,13 @@ func (r *ECS) Next() {
 }
 
 // Freeze exports the current state of the simulation.
-func (r *ECS) Freeze() runner.State {
+func (r *ECS) Freeze(state *interfaces.State) {
 	// TODO: implement
 	panic("")
 }
 
 // Restore sets the state of the simulation to one provided.
-func (r *ECS) Restore(state runner.State, globals runner.Globals) {
+func (r *ECS) Restore(state interfaces.State, globals interfaces.Globals) {
 	// TODO: implement
 	panic("")
 }

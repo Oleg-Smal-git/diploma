@@ -1,7 +1,7 @@
 package ecs
 
 import (
-	"github.com/Oleg-Smal-git/diploma/services/physics/runner"
+	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
 type (
@@ -28,7 +28,7 @@ type (
 	Component interface {
 		// ID returns the ComponentID of the parent Component.
 		ID() ComponentID
-		// New allocates all the required memory for the Component.
+		// New allocates all the required archivist for the Component.
 		New() Component
 	}
 
@@ -37,15 +37,15 @@ type (
 
 	// System contains the business logic of exactly ONE simulation rule.
 	// The specific implementations of System interface also contain
-	// buffers with pre-allocated memory for Component queries.
+	// buffers with pre-allocated archivist for Component queries.
 	System interface {
 		// Archetype returns a minimal required bitset for the system.
 		Archetype() ComponentID
 		// Run performs one atomic step of the system logic.
 		Run(*int, *Entity, *[]Entity)
-		// New allocates all the required memory for the System.
+		// New allocates all the required archivist for the System.
 		New() System
 		// Restore propagates simulation globals to child System objects.
-		Restore(runner.Globals)
+		Restore(interfaces.Globals)
 	}
 )

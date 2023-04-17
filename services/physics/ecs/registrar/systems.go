@@ -3,11 +3,11 @@ package registrar
 import (
 	"math"
 
+	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
-	"github.com/Oleg-Smal-git/diploma/services/physics/runner"
 )
 
-// SystemRegistrar wraps all systems to be queried during preemptive memory allocation.
+// SystemRegistrar wraps all systems to be queried during preemptive archivist allocation.
 // Notice how the order in which systems are registered here is in fact the order in which
 // they are going to be executed later on during the actual simulation.
 var SystemRegistrar = []ecs.System{
@@ -26,7 +26,7 @@ var (
 
 // SystemMover implements the movement logic.
 type SystemMover struct {
-	globals runner.Globals
+	globals interfaces.Globals
 
 	active   *ComponentActive
 	position *ComponentPosition
@@ -52,7 +52,7 @@ func (s *SystemMover) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity
 	s.position.Y += s.velocity.Y * s.globals.FrameDuration
 }
 
-// New allocates all the required memory for the System.
+// New allocates all the required archivist for the System.
 func (SystemMover) New() ecs.System {
 	// It's okay to keep pointers as nil since those will just be redirected
 	// to already existing components during Run calls.
@@ -60,13 +60,13 @@ func (SystemMover) New() ecs.System {
 }
 
 // Restore propagates simulation globals to child System objects.
-func (s *SystemMover) Restore(globals runner.Globals) {
+func (s *SystemMover) Restore(globals interfaces.Globals) {
 	s.globals = globals
 }
 
 // SystemCollider implements the collision logic.
 type SystemCollider struct {
-	globals runner.Globals
+	globals interfaces.Globals
 
 	active    *ComponentActive
 	rigidBody *ComponentRigidBody
@@ -146,7 +146,7 @@ func (s *SystemCollider) Run(index *int, entity *ecs.Entity, entities *[]ecs.Ent
 	}
 }
 
-// New allocates all the required memory for the System.
+// New allocates all the required archivist for the System.
 func (SystemCollider) New() ecs.System {
 	// It's okay to keep pointers as nil since those will just be redirected
 	// to already existing components during Run calls.
@@ -154,13 +154,13 @@ func (SystemCollider) New() ecs.System {
 }
 
 // Restore propagates simulation globals to child System objects.
-func (s *SystemCollider) Restore(globals runner.Globals) {
+func (s *SystemCollider) Restore(globals interfaces.Globals) {
 	s.globals = globals
 }
 
 // SystemBoundary implements the boundary logic.
 type SystemBoundary struct {
-	globals runner.Globals
+	globals interfaces.Globals
 
 	active    *ComponentActive
 	rigidBody *ComponentRigidBody
@@ -206,7 +206,7 @@ func (s *SystemBoundary) Run(index *int, entity *ecs.Entity, entities *[]ecs.Ent
 	}
 }
 
-// New allocates all the required memory for the System.
+// New allocates all the required archivist for the System.
 func (SystemBoundary) New() ecs.System {
 	// It's okay to keep pointers as nil since those will just be redirected
 	// to already existing components during Run calls.
@@ -214,6 +214,6 @@ func (SystemBoundary) New() ecs.System {
 }
 
 // Restore propagates simulation globals to child System objects.
-func (s *SystemBoundary) Restore(globals runner.Globals) {
+func (s *SystemBoundary) Restore(globals interfaces.Globals) {
 	s.globals = globals
 }

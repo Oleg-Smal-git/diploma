@@ -1,4 +1,4 @@
-package runner
+package interfaces
 
 import (
 	"time"
@@ -11,9 +11,17 @@ type (
 		// Next performs one atomic step of the simulation.
 		Next()
 		// Freeze exports the current state of the simulation.
-		Freeze() State
+		Freeze(*State)
 		// Restore sets the State and Globals of the simulation to one provided.
 		Restore(State, Globals)
+	}
+
+	// Archivist is an interface used to interact with disk.
+	Archivist interface {
+		// LoadState sets the State from source file into target.
+		LoadState(source string, target *State) error
+		// SaveState saves the source State in target file.
+		SaveState(target string, source State) error
 	}
 
 	// State represents an exhaustive description of physics state of the simulation.
@@ -24,15 +32,15 @@ type (
 		LastFrameTime time.Duration
 	}
 
+	// Globals is a wrapper for all simulation config values, like frame duration.
+	Globals struct {
+		FrameDuration float64
+	}
+
 	// Ball goes bounce :)
 	Ball struct {
 		X, Y           float64
 		Radius         float64
 		SpeedX, SpeedY float64
-	}
-
-	// Globals is a wrapper for all simulation config values, like frame duration.
-	Globals struct {
-		FrameDuration float64
 	}
 )
