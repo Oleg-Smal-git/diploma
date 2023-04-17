@@ -1,4 +1,4 @@
-package instances
+package registrar
 
 import (
 	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
@@ -12,5 +12,5 @@ var ArchetypesRegistrar = []ecs.ComponentID{
 // Archetypes are composites of ComponentID that exhaustively describe an Entity class.
 const (
 	// ArchetypeBall goes bounce :)
-	ArchetypeBall = ComponentIDActive | ComponentIDRigidBody | ComponentIDPosition | ComponentIDVelocity
+	ArchetypeBall = ComponentIDActive | ComponentIDRigidBody | ComponentIDBoundary | ComponentIDPosition | ComponentIDVelocity
 )

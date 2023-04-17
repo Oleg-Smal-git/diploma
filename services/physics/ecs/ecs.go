@@ -51,7 +51,7 @@ func (r *ECS) Next() {
 	for _, c := range r.chunks {
 		for _, s := range c.Systems {
 			for i := range c.Entities {
-				s.Run(&c.Entities[i], &c.Entities)
+				s.Run(&i, &c.Entities[i], &c.Entities)
 			}
 		}
 	}
