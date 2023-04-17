@@ -42,7 +42,7 @@ type (
 		// Archetype returns a minimal required bitset for the system.
 		Archetype() ComponentID
 		// Run performs one atomic step of the system logic.
-		Run(*Entity, *[]Entity)
+		Run(*int, *Entity, *[]Entity)
 		// New allocates all the required memory for the System.
 		New() System
 		// Restore propagates simulation globals to child System objects.

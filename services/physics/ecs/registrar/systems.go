@@ -39,7 +39,7 @@ func (SystemMover) Archetype() ecs.ComponentID {
 }
 
 // Run performs one atomic step of the system logic.
-func (s *SystemMover) Run(entity *ecs.Entity, entities *[]ecs.Entity) {
+func (s *SystemMover) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity) {
 	// Assert component types and cache them in buffer.
 	if s.active = entity.Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 		return
@@ -72,6 +72,20 @@ type SystemCollider struct {
 	rigidBody *ComponentRigidBody
 	position  *ComponentPosition
 	velocity  *ComponentVelocity
+
+	activeIterator    *ComponentActive
+	rigidBodyIterator *ComponentRigidBody
+	positionIterator  *ComponentPosition
+	velocityIterator  *ComponentVelocity
+
+	velocityDifference     ComponentVelocity
+	velocityExchange       ComponentVelocity
+	centralDirectionVector ComponentPosition
+	realignmentVector      ComponentPosition
+	momentumExchangeModule float64
+	centralDistance        float64
+	overlap                float64
+	i                      int
 }
 
 // Archetype returns a minimal required bitset for the system.
@@ -79,8 +93,7 @@ func (SystemCollider) Archetype() ecs.ComponentID {
 	return ComponentIDActive | ComponentIDRigidBody | ComponentIDPosition | ComponentIDVelocity
 }
 
-// Run performs one atomic step of the system logic.
-func (s *SystemCollider) Run(entity *ecs.Entity, entities *[]ecs.Entity) {
+func (s *SystemCollider) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity) {
 	// Assert component types and cache them in buffer.
 	if s.active = entity.Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 		return
@@ -90,7 +103,47 @@ func (s *SystemCollider) Run(entity *ecs.Entity, entities *[]ecs.Entity) {
 	s.velocity = entity.Components[ComponentIDVelocity].(*ComponentVelocity)
 
 	// Business logic.
+	for s.i = range *entities {
+		if *index <= s.i {
+			continue // Skip already evaluated pairs and self.
+		}
+		// Assert component types and cache them in buffer.
+		if s.activeIterator = (*entities)[s.i].Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
+			continue
+		}
+		s.rigidBodyIterator = (*entities)[s.i].Components[ComponentIDRigidBody].(*ComponentRigidBody)
+		s.positionIterator = (*entities)[s.i].Components[ComponentIDPosition].(*ComponentPosition)
+		s.velocityIterator = (*entities)[s.i].Components[ComponentIDVelocity].(*ComponentVelocity)
 
+		// Check for collision.
+		s.centralDirectionVector.X = s.positionIterator.X - s.position.X
+		s.centralDirectionVector.Y = s.positionIterator.Y - s.position.Y
+		s.centralDistance = math.Sqrt(math.Pow(s.centralDirectionVector.X, 2) + math.Pow(s.centralDirectionVector.Y, 2))
+		if s.overlap = s.rigidBody.Size + s.rigidBodyIterator.Size - s.centralDistance; s.overlap < 0 {
+			continue // Skip a pair if it's too far apart.
+		}
+
+		// Evaluate the collision.
+		s.velocityDifference.X = s.velocity.X - s.velocityIterator.X
+		s.velocityDifference.Y = s.velocity.Y - s.velocityIterator.Y
+		s.centralDirectionVector.X /= s.centralDistance
+		s.centralDirectionVector.Y /= s.centralDistance
+		s.realignmentVector.X = s.centralDirectionVector.X * s.overlap / 2
+		s.realignmentVector.Y = s.centralDirectionVector.Y * s.overlap / 2
+		s.momentumExchangeModule = s.centralDirectionVector.X*s.velocityDifference.X + s.centralDirectionVector.Y*s.velocityDifference.Y
+		s.velocityExchange.X = s.momentumExchangeModule * s.centralDirectionVector.X
+		s.velocityExchange.Y = s.momentumExchangeModule * s.centralDirectionVector.Y
+
+		// Perform the collision.
+		s.velocity.X -= s.velocityExchange.X
+		s.velocity.Y -= s.velocityExchange.Y
+		s.velocityIterator.X += s.velocityExchange.X
+		s.velocityIterator.Y += s.velocityExchange.Y
+		s.position.X -= s.realignmentVector.X
+		s.position.Y -= s.realignmentVector.Y
+		s.positionIterator.X += s.realignmentVector.X
+		s.positionIterator.Y += s.realignmentVector.Y
+	}
 }
 
 // New allocates all the required memory for the System.
@@ -124,7 +177,7 @@ func (SystemBoundary) Archetype() ecs.ComponentID {
 }
 
 // Run performs one atomic step of the system logic.
-func (s *SystemBoundary) Run(entity *ecs.Entity, entities *[]ecs.Entity) {
+func (s *SystemBoundary) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity) {
 	// Assert component types and cache them in buffer.
 	if s.active = entity.Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 		return
