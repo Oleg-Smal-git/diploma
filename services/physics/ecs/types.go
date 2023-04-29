@@ -46,6 +46,8 @@ type (
 		// New allocates all the required archivist for the System.
 		New() System
 		// Restore propagates simulation globals to child System objects.
-		Restore(interfaces.Globals)
+		// Since globals shouldn't ever change, it's okay to pass a pointer,
+		// and just dereference it on each copy (like system instantiation).
+		Restore(*interfaces.Globals)
 	}
 )

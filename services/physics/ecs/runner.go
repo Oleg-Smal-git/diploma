@@ -1,6 +1,8 @@
 package ecs
 
 import (
+	"time"
+
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
@@ -11,13 +13,18 @@ var _ interfaces.Runner = (*ECS)(nil)
 // ECS stands for Entity Component System and is an architectural
 // pattern we will be using for this implementation of interfaces.interfaces.
 type ECS struct {
-	chunks []Chunk
+	globals interfaces.Globals
+	chunks 			   []Chunk
+	lastFrameStartTime time.time
+	lastFrameEndTime   time.Time
+	lastFrameDuration  time.Duration
 }
 
 // NewRunner constructs an ECS object.
-func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System) *ECS {
+func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System, globals interfaces.Globals) *ECS {
 	ecs := ECS{
-		chunks: make([]Chunk, 0, len(archetypesRegistrar)),
+		globals: globals,
+		chunks:  make([]Chunk, 0, len(archetypesRegistrar)),
 	}
 	for _, a := range archetypesRegistrar {
 		chunk := Chunk{
@@ -38,6 +45,7 @@ func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID
 			if a&s.Archetype() == s.Archetype() {
 				// This is done in order to deep copy the interface value.
 				chunk.Systems = append(chunk.Systems, s.New())
+				chunk.Systems[len(chunk.Systems)-1].Restore(&ecs.globals)
 			}
 		}
 		ecs.chunks[a] = chunk
@@ -47,6 +55,7 @@ func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID
 
 // Next performs one atomic step of the simulation.
 func (r *ECS) Next() {
+	r.lastFrameStartTime = time.Now()
 	// This would be a great place to introduce concurrency, but in order
 	// to be able to compare this approach with others, all computations
 	// are going to be performed linearly.
@@ -57,12 +66,13 @@ func (r *ECS) Next() {
 			}
 		}
 	}
+	r.lastFrameEndTime = time.Now()
+	r.lastFrameDuration = r.lastFrameEndTime.Sub(r.lastFrameStartTime)
 }
 
 // Freeze exports the current state of the simulation.
 func (r *ECS) Freeze(state *interfaces.State) {
-	// TODO: implement
-	panic("")
+	state.LastFrameDuration = r.lastFrameDuration
 }
 
 // Restore sets the state of the simulation to one provided.

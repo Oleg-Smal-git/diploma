@@ -60,8 +60,8 @@ func (SystemMover) New() ecs.System {
 }
 
 // Restore propagates simulation globals to child System objects.
-func (s *SystemMover) Restore(globals interfaces.Globals) {
-	s.globals = globals
+func (s *SystemMover) Restore(globals *interfaces.Globals) {
+	s.globals = *globals
 }
 
 // SystemCollider implements the collision logic.
@@ -154,8 +154,8 @@ func (SystemCollider) New() ecs.System {
 }
 
 // Restore propagates simulation globals to child System objects.
-func (s *SystemCollider) Restore(globals interfaces.Globals) {
-	s.globals = globals
+func (s *SystemCollider) Restore(globals *interfaces.Globals) {
+	s.globals = *globals
 }
 
 // SystemBoundary implements the boundary logic.
@@ -214,6 +214,6 @@ func (SystemBoundary) New() ecs.System {
 }
 
 // Restore propagates simulation globals to child System objects.
-func (s *SystemBoundary) Restore(globals interfaces.Globals) {
-	s.globals = globals
+func (s *SystemBoundary) Restore(globals *interfaces.Globals) {
+	s.globals = *globals
 }

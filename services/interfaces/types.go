@@ -28,13 +28,14 @@ type (
 	State struct {
 		// Balls is a collection of all Ball objects that take part in the simulation.
 		Balls []Ball
-		// LastFrameTime is the amount of time it took to compute last frame.
-		LastFrameTime time.Duration
+		// LastFrameDuration is the amount of time it took to compute last frame.
+		LastFrameDuration time.Duration
 	}
 
 	// Globals is a wrapper for all simulation config values, like frame duration.
 	Globals struct {
-		FrameDuration float64
+		// FrameSimulationTime is the duration of an atomic simulation step.
+		FrameSimulationTime float64
 	}
 
 	// Ball goes bounce :)
