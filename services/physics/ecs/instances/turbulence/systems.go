@@ -195,11 +195,11 @@ func (s *SystemBoundary) Run(index *int, entity *ecs.Entity, entities []*ecs.Ent
 	}
 	if s.delta = s.position.Y + s.rigidBody.Size - s.boundary.MaxY; s.delta > 0 {
 		s.position.Y -= s.delta // Bottom edge.
-		s.velocity.Y *= -math.Abs(s.velocity.Y)
+		s.velocity.Y = -math.Abs(s.velocity.Y)
 	}
 	if s.delta = s.position.Y - s.rigidBody.Size - s.boundary.MinY; s.delta < 0 {
 		s.position.Y -= s.delta // Top edge.
-		s.velocity.Y *= math.Abs(s.velocity.Y)
+		s.velocity.Y = math.Abs(s.velocity.Y)
 	}
 }
 

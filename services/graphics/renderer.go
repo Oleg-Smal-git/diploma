@@ -2,15 +2,18 @@ package graphics
 
 import (
 	"fmt"
-	"github.com/icza/mjpeg"
 	"io/ioutil"
 	"os"
 	"regexp"
+	"sort"
+	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 
 	"github.com/Oleg-Smal-git/gg"
+	"github.com/icza/mjpeg"
 )
 
 // Confirm that Renderer satisfies interfaces.Renderer interface.
@@ -74,7 +77,7 @@ func (r *Renderer) BulkRender(sourceDirectory string, destinationDirectory strin
 			for f := range r.files {
 				if err := r.consumeInput(
 					fmt.Sprintf("%v/%v", sourceDirectory, f),
-					r.extensionRegex.ReplaceAllString(fmt.Sprintf("%v/%v", destinationDirectory, f), ".png"),
+					r.extensionRegex.ReplaceAllString(fmt.Sprintf("%v/%v", destinationDirectory, f), ".jpg"),
 					workerIndex, template,
 				); err != nil {
 					r.errors <- err
@@ -95,6 +98,11 @@ func (r *Renderer) BulkRender(sourceDirectory string, destinationDirectory strin
 // Collect create an aggregation file (like gif/mp4/avi).
 func (r *Renderer) Collect(sourceDirectory string, destination string) error {
 	entries, err := os.ReadDir(sourceDirectory)
+	sort.Slice(entries, func(i, j int) bool {
+		ii, _ := strconv.Atoi(strings.Split(entries[i].Name(), ".")[0])
+		jj, _ := strconv.Atoi(strings.Split(entries[j].Name(), ".")[0])
+		return ii < jj
+	})
 	if err != nil {
 		return err
 	}
@@ -103,14 +111,12 @@ func (r *Renderer) Collect(sourceDirectory string, destination string) error {
 		return err
 	}
 	for _, e := range entries {
-		for i := 1; i <= 10; i++ {
-			data, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", sourceDirectory, e.Name()))
-			if err != nil {
-				return err
-			}
-			if err := writer.AddFrame(data); err != nil {
-				return err
-			}
+		data, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", sourceDirectory, e.Name()))
+		if err != nil {
+			return err
+		}
+		if err := writer.AddFrame(data); err != nil {
+			return err
 		}
 	}
 	return writer.Close()
@@ -122,6 +128,7 @@ func (r *Renderer) consumeInput(in string, out string, worker int, template inte
 	if err := r.archivist.LoadState(in, &object); err != nil {
 		return err
 	}
+	r.contexts[worker].SetRGB(0, 0, 0)
 	r.contexts[worker].Clear()
 	object.Render(r.contexts[worker])
 	return r.contexts[worker].SaveJPG(out, 100)

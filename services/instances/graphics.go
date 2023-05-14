@@ -18,7 +18,7 @@ func (s *State) New() interfaces.Renderable {
 // Render renders the object to the target context.
 func (s *State) Render(context *gg.Context) {
 	for _, b := range s.Balls {
-		context.DrawCircle(b.X, b.Y, 10)
+		context.DrawCircle(b.X, b.Y, b.Radius)
 		context.SetRGB(1, 1, 1)
 		context.Fill()
 	}
