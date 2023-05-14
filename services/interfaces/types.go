@@ -13,7 +13,7 @@ type (
 		// Freeze exports the current state of the simulation.
 		Freeze(interface{})
 		// Restore sets the State and Globals of the simulation to one provided.
-		Restore(interface{}, Globals)
+		Restore(interface{}, *Globals)
 	}
 
 	// Archivist is an interface used to interact with disk.

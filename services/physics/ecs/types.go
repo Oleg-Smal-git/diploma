@@ -56,6 +56,6 @@ type (
 		// Freeze exports the current state of the simulation.
 		Freeze(*ECS, interface{})
 		// Restore sets the State and Globals of the simulation to one provided.
-		Restore(*ECS, interface{}, interfaces.Globals)
+		Restore(*ECS, interface{}, *interfaces.Globals)
 	}
 )

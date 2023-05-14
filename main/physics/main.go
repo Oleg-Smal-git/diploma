@@ -18,7 +18,7 @@ func main() {
 	if err := archivist.LoadState(config.StateSource, &state); err != nil {
 		panic("initialization failure: " + err.Error())
 	}
-	runner.Restore(&state, config.Globals)
+	runner.Restore(&state, &config.Globals)
 	// Copy initial state as first result.
 	if err := archivist.SaveState(fmt.Sprintf("%v/%v.mpk", config.StateDestination, 0), state); err != nil {
 		panic("archivist failure: " + err.Error())

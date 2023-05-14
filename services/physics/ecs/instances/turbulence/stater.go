@@ -57,7 +57,7 @@ func (s *Stater) Freeze(ecs *ecs.ECS, state interface{}) {
 }
 
 // Restore sets the State and Globals of the simulation to one provided.
-func (s *Stater) Restore(ecs *ecs.ECS, state interface{}, globals interfaces.Globals) {
+func (s *Stater) Restore(ecs *ecs.ECS, state interface{}, globals *interfaces.Globals) {
 	castState, success := state.(*instances.State)
 	if !success {
 		panic("invalid source state type")

@@ -14,7 +14,7 @@ var _ interfaces.Runner = (*ECS)(nil)
 // pattern we will be using for this implementation of interfaces.interfaces.
 type ECS struct {
 	Chunks             map[ComponentID]Chunk
-	Globals            interfaces.Globals
+	Globals            *interfaces.Globals
 	stater             Stater
 	lastFrameStartTime time.Time
 	lastFrameEndTime   time.Time
@@ -47,7 +47,6 @@ func NewRunner(stater Stater, componentRegistrar []Component, archetypesRegistra
 			if a&s.Archetype() == s.Archetype() {
 				// This is done in order to deep copy the interface value.
 				chunk.Systems = append(chunk.Systems, s.New())
-				chunk.Systems[len(chunk.Systems)-1].Restore(&ecs.Globals)
 			}
 		}
 		ecs.Chunks[a] = chunk
@@ -78,6 +77,11 @@ func (r *ECS) Freeze(state interface{}) {
 }
 
 // Restore sets the state of the simulation to one provided.
-func (r *ECS) Restore(state interface{}, globals interfaces.Globals) {
+func (r *ECS) Restore(state interface{}, globals *interfaces.Globals) {
+	for i := range r.Chunks {
+		for j := range r.Chunks[i].Systems {
+			r.Chunks[i].Systems[j].Restore(globals)
+		}
+	}
 	r.stater.Restore(r, state, globals)
 }

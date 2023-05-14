@@ -17,7 +17,7 @@ const (
 	// Used to pre-allocate memory during initialization.
 	StateCapacity = 100
 	// FrameCap is the amount of frames after which the simulation stops.
-	FrameCap = 3
+	FrameCap = 3600
 	// FrameDuration is the amount of imaginary time that a frame lasts.
 	// for simplicity's sake, all the numbers here are calibrated around
 	// this variable being evaluated in seconds.
