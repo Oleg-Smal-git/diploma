@@ -12,7 +12,7 @@ import (
 )
 
 func initialize() interfaces.Renderer {
-	return graphics.NewRenderer(archivist.NewArchivist(), config.ImageWidth, config.ImageHeight, config.GraphicsWorkerPool)
+	return graphics.NewRenderer(archivist.NewArchivist(), config.ImageWidth, config.ImageHeight, config.FramesPerSecond, config.GraphicsWorkerPool)
 }
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 		panic(err)
 	}
 	// Collect frames into aggregation.
-	if err := renderer.Collect(config.FrameDestination, fmt.Sprintf("%v/%v.gif", config.AggregationDestination, time.Now().UnixNano())); err != nil {
+	if err := renderer.Collect(config.FrameDestination, fmt.Sprintf("%v/%v.avi", config.AggregationDestination, time.Now().UnixNano())); err != nil {
 		panic(err)
 	}
 }

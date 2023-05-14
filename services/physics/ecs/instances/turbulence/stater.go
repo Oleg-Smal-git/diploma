@@ -10,7 +10,7 @@ import (
 // This will throw a compile error otherwise.
 var _ ecs.Stater = (*Stater)(nil)
 
-// Stater exports / imports the state of the simulation.
+// Stater exports/imports the state of the simulation.
 type Stater struct {
 	activeBuffer    *ComponentActive
 	rigidBodyBuffer *ComponentRigidBody

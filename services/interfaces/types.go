@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/fogleman/gg"
+	"github.com/Oleg-Smal-git/gg"
 )
 
 type (

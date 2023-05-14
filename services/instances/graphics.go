@@ -3,7 +3,7 @@ package instances
 import (
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 
-	"github.com/fogleman/gg"
+	"github.com/Oleg-Smal-git/gg"
 )
 
 // Confirm that State satisfies interfaces.Renderable interface.

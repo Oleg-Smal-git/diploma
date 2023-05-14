@@ -23,7 +23,7 @@ type (
 	}
 
 	// Component represents a flag that System objects use when iterating over Entity collections
-	// in order to only alter / interact with entities that are meant to for respective systems,
+	// in order to only alter/interact with entities that are meant to for respective systems,
 	// and information relevant for those systems.
 	Component interface {
 		// ID returns the ComponentID of the parent Component.

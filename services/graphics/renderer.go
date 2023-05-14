@@ -2,13 +2,15 @@ package graphics
 
 import (
 	"fmt"
+	"github.com/icza/mjpeg"
+	"io/ioutil"
 	"os"
 	"regexp"
 	"sync"
 
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 
-	"github.com/fogleman/gg"
+	"github.com/Oleg-Smal-git/gg"
 )
 
 // Confirm that Renderer satisfies interfaces.Renderer interface.
@@ -17,21 +19,26 @@ var _ interfaces.Renderer = (*Renderer)(nil)
 
 // Renderer implements interfaces.Renderer.
 type Renderer struct {
-	archivist      interfaces.Archivist
-	contexts       map[int]*gg.Context
-	workers        int
-	files          chan string
-	errors         chan error
-	fileGroup      sync.WaitGroup
-	errorGroup     sync.WaitGroup
-	extensionRegex *regexp.Regexp
+	archivist                   interfaces.Archivist
+	contexts                    map[int]*gg.Context
+	contextWidth, contextHeight int32
+	fps                         int32
+	workers                     int
+	files                       chan string
+	errors                      chan error
+	fileGroup                   sync.WaitGroup
+	errorGroup                  sync.WaitGroup
+	extensionRegex              *regexp.Regexp
 }
 
 // NewRenderer instantiates a new Renderer.
-func NewRenderer(archivist interfaces.Archivist, contextWidth, contextHeight, workers int) *Renderer {
+func NewRenderer(archivist interfaces.Archivist, contextWidth int, contextHeight int, fps int32, workers int) *Renderer {
 	renderer := &Renderer{
 		archivist:      archivist,
 		contexts:       make(map[int]*gg.Context, workers),
+		contextWidth:   int32(contextWidth),
+		contextHeight:  int32(contextHeight),
+		fps:            fps,
 		workers:        workers,
 		files:          nil,
 		errors:         nil,
@@ -85,10 +92,28 @@ func (r *Renderer) BulkRender(sourceDirectory string, destinationDirectory strin
 	return nil
 }
 
-// Collect create an aggregation file (like .gif or .mp4).
+// Collect create an aggregation file (like gif/mp4/avi).
 func (r *Renderer) Collect(sourceDirectory string, destination string) error {
-	// TODO: implement.
-	panic("implement")
+	entries, err := os.ReadDir(sourceDirectory)
+	if err != nil {
+		return err
+	}
+	writer, err := mjpeg.New(destination, r.contextWidth, r.contextHeight, r.fps)
+	if err != nil {
+		return err
+	}
+	for _, e := range entries {
+		for i := 1; i <= 10; i++ {
+			data, err := ioutil.ReadFile(fmt.Sprintf("%v/%v", sourceDirectory, e.Name()))
+			if err != nil {
+				return err
+			}
+			if err := writer.AddFrame(data); err != nil {
+				return err
+			}
+		}
+	}
+	return writer.Close()
 }
 
 // consumeInput reads state file and renders the result.
@@ -97,8 +122,9 @@ func (r *Renderer) consumeInput(in string, out string, worker int, template inte
 	if err := r.archivist.LoadState(in, &object); err != nil {
 		return err
 	}
+	r.contexts[worker].Clear()
 	object.Render(r.contexts[worker])
-	return r.contexts[worker].SavePNG(out)
+	return r.contexts[worker].SaveJPG(out, 100)
 }
 
 // consumeError handles consumeInput errors.
