@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Oleg-Smal-git/diploma/main/config"
 	"github.com/Oleg-Smal-git/diploma/services/instances"
-	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
 func main() {
@@ -18,14 +18,16 @@ func main() {
 	if err := archivist.LoadState(config.StateSource, &state); err != nil {
 		panic("initialization failure: " + err.Error())
 	}
-	runner.Restore(&state, interfaces.Globals{
-		FrameSimulationTime: config.FrameDuration,
-	})
+	runner.Restore(&state, config.Globals)
+	// Copy initial state as first result.
+	if err := archivist.SaveState(fmt.Sprintf("%v/%v.mpk", config.StateDestination, 0), state); err != nil {
+		panic("archivist failure: " + err.Error())
+	}
 	// Execute the simulation.
 	for i := 0; i < config.FrameCap; i++ {
 		runner.Next()
 		runner.Freeze(&state)
-		if err := archivist.SaveState(config.StateDestination, state); err != nil {
+		if err := archivist.SaveState(fmt.Sprintf("%v/%v.mpk", config.StateDestination, i+1), state); err != nil {
 			panic("archivist failure: " + err.Error())
 		}
 	}

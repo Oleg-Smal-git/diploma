@@ -18,7 +18,7 @@ var _ interfaces.Renderer = (*Renderer)(nil)
 // Renderer implements interfaces.Renderer.
 type Renderer struct {
 	archivist      interfaces.Archivist
-	context        *gg.Context
+	contexts       map[int]*gg.Context
 	workers        int
 	files          chan string
 	errors         chan error
@@ -28,10 +28,10 @@ type Renderer struct {
 }
 
 // NewRenderer instantiates a new Renderer.
-func NewRenderer(archivist interfaces.Archivist, context *gg.Context, workers int) *Renderer {
-	return &Renderer{
+func NewRenderer(archivist interfaces.Archivist, contextWidth, contextHeight, workers int) *Renderer {
+	renderer := &Renderer{
 		archivist:      archivist,
-		context:        context,
+		contexts:       make(map[int]*gg.Context, workers),
 		workers:        workers,
 		files:          nil,
 		errors:         nil,
@@ -39,6 +39,10 @@ func NewRenderer(archivist interfaces.Archivist, context *gg.Context, workers in
 		errorGroup:     sync.WaitGroup{},
 		extensionRegex: regexp.MustCompile(`(\.\w+)$`),
 	}
+	for i := 0; i < workers; i++ {
+		renderer.contexts[i] = gg.NewContext(contextWidth, contextHeight)
+	}
+	return renderer
 }
 
 // BulkRender renders all files in sourceDirectory and saves results to destinationDirectory.
@@ -57,13 +61,14 @@ func (r *Renderer) BulkRender(sourceDirectory string, destinationDirectory strin
 		}
 	}()
 	for i := 0; i < r.workers; i++ {
+		workerIndex := i
 		go func() {
 			defer r.fileGroup.Done()
 			for f := range r.files {
 				if err := r.consumeInput(
 					fmt.Sprintf("%v/%v", sourceDirectory, f),
 					r.extensionRegex.ReplaceAllString(fmt.Sprintf("%v/%v", destinationDirectory, f), ".png"),
-					template,
+					workerIndex, template,
 				); err != nil {
 					r.errors <- err
 				}
@@ -87,13 +92,13 @@ func (r *Renderer) Collect(sourceDirectory string, destination string) error {
 }
 
 // consumeInput reads state file and renders the result.
-func (r *Renderer) consumeInput(in string, out string, template interfaces.Renderable) error {
+func (r *Renderer) consumeInput(in string, out string, worker int, template interfaces.Renderable) error {
 	object := template.New()
 	if err := r.archivist.LoadState(in, &object); err != nil {
 		return err
 	}
-	object.Render(r.context)
-	return r.context.SavePNG(out)
+	object.Render(r.contexts[worker])
+	return r.contexts[worker].SavePNG(out)
 }
 
 // consumeError handles consumeInput errors.

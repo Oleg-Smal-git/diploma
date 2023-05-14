@@ -7,7 +7,7 @@ __build_oop:
 	@go build -o ./bin/physics/oop -tags BUILD_OOP ./main/physics
 
 __build_render:
-	@go build -o ./bin/render ./main/graphics
+	@go build -o ./bin/graphics ./main/graphics
 
 simulate_ecs:
 	@./bin/physics/ecs

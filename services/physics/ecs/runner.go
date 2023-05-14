@@ -13,7 +13,7 @@ var _ interfaces.Runner = (*ECS)(nil)
 // ECS stands for Entity Component System and is an architectural
 // pattern we will be using for this implementation of interfaces.interfaces.
 type ECS struct {
-	Chunks             []Chunk
+	Chunks             map[ComponentID]Chunk
 	Globals            interfaces.Globals
 	stater             Stater
 	lastFrameStartTime time.Time
@@ -24,7 +24,7 @@ type ECS struct {
 // NewRunner constructs an ECS object.
 func NewRunner(stater Stater, componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System) *ECS {
 	ecs := ECS{
-		Chunks: make([]Chunk, 0, len(archetypesRegistrar)),
+		Chunks: make(map[ComponentID]Chunk, len(archetypesRegistrar)),
 		stater: stater,
 	}
 	for _, a := range archetypesRegistrar {
