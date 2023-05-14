@@ -1,9 +1,5 @@
 package interfaces
 
-import (
-	"time"
-)
-
 type (
 	// Runner is an interface that represents an object that performs all
 	// the physics calculations, regardless of how they are implemented.
@@ -11,37 +7,35 @@ type (
 		// Next performs one atomic step of the simulation.
 		Next()
 		// Freeze exports the current state of the simulation.
-		Freeze(*State)
+		Freeze(interface{})
 		// Restore sets the State and Globals of the simulation to one provided.
-		Restore(State, Globals)
+		Restore(interface{}, Globals)
 	}
 
 	// Archivist is an interface used to interact with disk.
 	Archivist interface {
 		// LoadState sets the State from source file into target.
-		LoadState(source string, target *State) error
+		LoadState(source string, target interface{}) error
 		// SaveState saves the source State in target file.
-		SaveState(target string, source State) error
-	}
-
-	// State represents an exhaustive description of physics state of the simulation.
-	State struct {
-		// Balls is a collection of all Ball objects that take part in the simulation.
-		Balls []Ball
-		// LastFrameDuration is the amount of time it took to compute last frame.
-		LastFrameDuration time.Duration
+		SaveState(target string, source interface{}) error
 	}
 
 	// Globals is a wrapper for all simulation config values, like frame duration.
 	Globals struct {
 		// FrameSimulationTime is the duration of an atomic simulation step.
 		FrameSimulationTime float64
+		// Boundaries = walls :D
+		Boundaries struct {
+			MinX, MaxX, MinY, MaxY float64
+		}
 	}
 
-	// Ball goes bounce :)
-	Ball struct {
-		X, Y           float64
-		Radius         float64
-		SpeedX, SpeedY float64
+	// Renderer generates images out of state snapshots
+	// and collects them into aggregation files.
+	Renderer interface {
+		// BulkRender renders all files in sourceDirectory and saves results to destinationDirectory.
+		BulkRender(sourceDirectory string, destinationDirectory string)
+		// Collect create an aggregation file (like .gif or .mp4).
+		Collect(sourceDirectory string, destination string)
 	}
 )

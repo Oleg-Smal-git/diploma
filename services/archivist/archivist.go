@@ -21,7 +21,7 @@ func NewArchivist() *Archivist {
 }
 
 // LoadState sets the State from source file into target.
-func (Archivist) LoadState(source string, target *interfaces.State) error {
+func (Archivist) LoadState(source string, target interface{}) error {
 	data, err := os.ReadFile(source)
 	if err != nil {
 		return err
@@ -30,7 +30,7 @@ func (Archivist) LoadState(source string, target *interfaces.State) error {
 }
 
 // SaveState saves the source State in target file.
-func (Archivist) SaveState(target string, source interfaces.State) error {
+func (Archivist) SaveState(target string, source interface{}) error {
 	data, err := msgpack.Marshal(source)
 	if err != nil {
 		return err

@@ -1,4 +1,4 @@
-package registrar
+package turbulence
 
 import (
 	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"

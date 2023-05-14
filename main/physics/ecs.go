@@ -6,9 +6,9 @@ import (
 	"github.com/Oleg-Smal-git/diploma/services/archivist"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
-	"github.com/Oleg-Smal-git/diploma/services/physics/ecs/registrar"
+	"github.com/Oleg-Smal-git/diploma/services/physics/ecs/instances/turbulence"
 )
 
 func initialize() (interfaces.Runner, interfaces.Archivist) {
-	return ecs.NewRunner(registrar.ComponentRegistrar, registrar.ArchetypesRegistrar, registrar.SystemRegistrar), archivist.NewArchivist()
+	return ecs.NewRunner(turbulence.NewStater(), turbulence.ComponentRegistrar, turbulence.ArchetypesRegistrar, turbulence.SystemRegistrar), archivist.NewArchivist()
 }

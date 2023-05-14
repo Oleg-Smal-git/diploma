@@ -1,4 +1,4 @@
-package registrar
+package turbulence
 
 import (
 	"math"
@@ -26,8 +26,7 @@ var (
 
 // SystemMover implements the movement logic.
 type SystemMover struct {
-	globals interfaces.Globals
-
+	globals  interfaces.Globals
 	active   *ComponentActive
 	position *ComponentPosition
 	velocity *ComponentVelocity
@@ -39,7 +38,7 @@ func (SystemMover) Archetype() ecs.ComponentID {
 }
 
 // Run performs one atomic step of the system logic.
-func (s *SystemMover) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity) {
+func (s *SystemMover) Run(index *int, entity *ecs.Entity, entities []*ecs.Entity) {
 	// Assert component types and cache them in buffer.
 	if s.active = entity.Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 		return
@@ -48,8 +47,8 @@ func (s *SystemMover) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity
 	s.velocity = entity.Components[ComponentIDVelocity].(*ComponentVelocity)
 
 	// Business logic.
-	s.position.X += s.velocity.X * s.globals.FrameDuration
-	s.position.Y += s.velocity.Y * s.globals.FrameDuration
+	s.position.X += s.velocity.X * s.globals.FrameSimulationTime
+	s.position.Y += s.velocity.Y * s.globals.FrameSimulationTime
 }
 
 // New allocates all the required archivist for the System.
@@ -66,8 +65,7 @@ func (s *SystemMover) Restore(globals *interfaces.Globals) {
 
 // SystemCollider implements the collision logic.
 type SystemCollider struct {
-	globals interfaces.Globals
-
+	globals   interfaces.Globals
 	active    *ComponentActive
 	rigidBody *ComponentRigidBody
 	position  *ComponentPosition
@@ -93,7 +91,7 @@ func (SystemCollider) Archetype() ecs.ComponentID {
 	return ComponentIDActive | ComponentIDRigidBody | ComponentIDPosition | ComponentIDVelocity
 }
 
-func (s *SystemCollider) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity) {
+func (s *SystemCollider) Run(index *int, entity *ecs.Entity, entities []*ecs.Entity) {
 	// Assert component types and cache them in buffer.
 	if s.active = entity.Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 		return
@@ -103,17 +101,17 @@ func (s *SystemCollider) Run(index *int, entity *ecs.Entity, entities *[]ecs.Ent
 	s.velocity = entity.Components[ComponentIDVelocity].(*ComponentVelocity)
 
 	// Business logic.
-	for s.i = range *entities {
+	for s.i = range entities {
 		if *index <= s.i {
 			continue // Skip already evaluated pairs and self.
 		}
 		// Assert component types and cache them in buffer.
-		if s.activeIterator = (*entities)[s.i].Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
+		if s.activeIterator = (entities)[s.i].Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 			continue
 		}
-		s.rigidBodyIterator = (*entities)[s.i].Components[ComponentIDRigidBody].(*ComponentRigidBody)
-		s.positionIterator = (*entities)[s.i].Components[ComponentIDPosition].(*ComponentPosition)
-		s.velocityIterator = (*entities)[s.i].Components[ComponentIDVelocity].(*ComponentVelocity)
+		s.rigidBodyIterator = (entities)[s.i].Components[ComponentIDRigidBody].(*ComponentRigidBody)
+		s.positionIterator = (entities)[s.i].Components[ComponentIDPosition].(*ComponentPosition)
+		s.velocityIterator = (entities)[s.i].Components[ComponentIDVelocity].(*ComponentVelocity)
 
 		// Check for collision.
 		s.centralDirectionVector.X = s.positionIterator.X - s.position.X
@@ -160,8 +158,7 @@ func (s *SystemCollider) Restore(globals *interfaces.Globals) {
 
 // SystemBoundary implements the boundary logic.
 type SystemBoundary struct {
-	globals interfaces.Globals
-
+	globals   interfaces.Globals
 	active    *ComponentActive
 	rigidBody *ComponentRigidBody
 	boundary  *ComponentBoundary
@@ -177,7 +174,7 @@ func (SystemBoundary) Archetype() ecs.ComponentID {
 }
 
 // Run performs one atomic step of the system logic.
-func (s *SystemBoundary) Run(index *int, entity *ecs.Entity, entities *[]ecs.Entity) {
+func (s *SystemBoundary) Run(index *int, entity *ecs.Entity, entities []*ecs.Entity) {
 	// Assert component types and cache them in buffer.
 	if s.active = entity.Components[ComponentIDActive].(*ComponentActive); !s.active.Active {
 		return

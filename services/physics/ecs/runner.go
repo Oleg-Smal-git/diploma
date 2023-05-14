@@ -13,26 +13,28 @@ var _ interfaces.Runner = (*ECS)(nil)
 // ECS stands for Entity Component System and is an architectural
 // pattern we will be using for this implementation of interfaces.interfaces.
 type ECS struct {
-	globals interfaces.Globals
-	chunks 			   []Chunk
-	lastFrameStartTime time.time
+	Chunks             []Chunk
+	Globals            interfaces.Globals
+	stater             Stater
+	lastFrameStartTime time.Time
 	lastFrameEndTime   time.Time
 	lastFrameDuration  time.Duration
 }
 
 // NewRunner constructs an ECS object.
-func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System, globals interfaces.Globals) *ECS {
+func NewRunner(stater Stater, componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System) *ECS {
 	ecs := ECS{
-		globals: globals,
-		chunks:  make([]Chunk, 0, len(archetypesRegistrar)),
+		Chunks: make([]Chunk, 0, len(archetypesRegistrar)),
+		stater: stater,
 	}
 	for _, a := range archetypesRegistrar {
 		chunk := Chunk{
 			Archetype: a,
-			Entities:  make([]Entity, chunkCapacity),
+			Entities:  make([]*Entity, chunkCapacity),
 			Systems:   make([]System, 0, len(systemRegistrar)),
 		}
 		for i := range chunk.Entities {
+			chunk.Entities[i] = new(Entity)
 			chunk.Entities[i].Components = make(map[ComponentID]Component, len(componentRegistrar))
 			for _, c := range componentRegistrar {
 				if a&c.ID() == c.ID() {
@@ -45,10 +47,10 @@ func NewRunner(componentRegistrar []Component, archetypesRegistrar []ComponentID
 			if a&s.Archetype() == s.Archetype() {
 				// This is done in order to deep copy the interface value.
 				chunk.Systems = append(chunk.Systems, s.New())
-				chunk.Systems[len(chunk.Systems)-1].Restore(&ecs.globals)
+				chunk.Systems[len(chunk.Systems)-1].Restore(&ecs.Globals)
 			}
 		}
-		ecs.chunks[a] = chunk
+		ecs.Chunks[a] = chunk
 	}
 	return &ecs
 }
@@ -59,10 +61,10 @@ func (r *ECS) Next() {
 	// This would be a great place to introduce concurrency, but in order
 	// to be able to compare this approach with others, all computations
 	// are going to be performed linearly.
-	for _, c := range r.chunks {
+	for _, c := range r.Chunks {
 		for _, s := range c.Systems {
 			for i := range c.Entities {
-				s.Run(&i, &c.Entities[i], &c.Entities)
+				s.Run(&i, c.Entities[i], c.Entities)
 			}
 		}
 	}
@@ -71,12 +73,11 @@ func (r *ECS) Next() {
 }
 
 // Freeze exports the current state of the simulation.
-func (r *ECS) Freeze(state *interfaces.State) {
-	state.LastFrameDuration = r.lastFrameDuration
+func (r *ECS) Freeze(state interface{}) {
+	r.stater.Freeze(r, state)
 }
 
 // Restore sets the state of the simulation to one provided.
-func (r *ECS) Restore(state interfaces.State, globals interfaces.Globals) {
-	// TODO: implement
-	panic("")
+func (r *ECS) Restore(state interface{}, globals interfaces.Globals) {
+	r.stater.Restore(r, state, globals)
 }

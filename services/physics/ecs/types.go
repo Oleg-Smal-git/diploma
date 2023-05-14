@@ -11,7 +11,7 @@ type (
 		// Archetype is the bitset of ComponentID flags that Entity owns.
 		Archetype ComponentID
 		// Entities is a collection of Entity objects.
-		Entities []Entity
+		Entities []*Entity
 		// Systems is a collection of System objects that are satisfied with parent Chunk's Archetype.
 		Systems []System
 	}
@@ -42,12 +42,20 @@ type (
 		// Archetype returns a minimal required bitset for the system.
 		Archetype() ComponentID
 		// Run performs one atomic step of the system logic.
-		Run(*int, *Entity, *[]Entity)
+		Run(*int, *Entity, []*Entity)
 		// New allocates all the required archivist for the System.
 		New() System
 		// Restore propagates simulation globals to child System objects.
 		// Since globals shouldn't ever change, it's okay to pass a pointer,
 		// and just dereference it on each copy (like system instantiation).
 		Restore(*interfaces.Globals)
+	}
+
+	// Stater is used to inject archive functionality into Runner.
+	Stater interface {
+		// Freeze exports the current state of the simulation.
+		Freeze(*ECS, interface{})
+		// Restore sets the State and Globals of the simulation to one provided.
+		Restore(*ECS, interface{}, interfaces.Globals)
 	}
 )

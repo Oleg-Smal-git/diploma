@@ -2,7 +2,7 @@ package config
 
 const (
 	// StateSource is a path to initial state source file.
-	StateSource = "./state.mpk"
+	StateSource = "./buff/start.mpk"
 	// StateDestination is a path to which intermediate states are saved.
 	StateDestination = ""
 	// StateCapacity describes the max amount of entities to be stored in state.
