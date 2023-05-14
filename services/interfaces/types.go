@@ -1,5 +1,9 @@
 package interfaces
 
+import (
+	"github.com/fogleman/gg"
+)
+
 type (
 	// Runner is an interface that represents an object that performs all
 	// the physics calculations, regardless of how they are implemented.
@@ -34,8 +38,17 @@ type (
 	// and collects them into aggregation files.
 	Renderer interface {
 		// BulkRender renders all files in sourceDirectory and saves results to destinationDirectory.
-		BulkRender(sourceDirectory string, destinationDirectory string)
+		BulkRender(sourceDirectory string, destinationDirectory string, template Renderable) error
 		// Collect create an aggregation file (like .gif or .mp4).
-		Collect(sourceDirectory string, destination string)
+		Collect(sourceDirectory string, destination string) error
+	}
+
+	// Renderable is an interfaces that's required to be
+	// satisfied by objects passed into Renderer.
+	Renderable interface {
+		// New instantiates an empty Renderable.
+		New() Renderable
+		// Render renders the object to the target context.
+		Render(context *gg.Context)
 	}
 )
