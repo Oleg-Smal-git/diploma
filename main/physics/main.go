@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Oleg-Smal-git/diploma/main/config"
@@ -25,7 +26,7 @@ func main() {
 	for i := 0; i < config.FrameCap; i++ {
 		runner.Next()
 		runner.Freeze(&state)
-		if err := archivist.SaveState(config.StateDestination, state); err != nil {
+		if err := archivist.SaveState(fmt.Sprintf("%v/%v.mpk", config.StateDestination, i), state); err != nil {
 			panic("archivist failure: " + err.Error())
 		}
 	}

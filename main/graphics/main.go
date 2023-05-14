@@ -9,12 +9,10 @@ import (
 	"github.com/Oleg-Smal-git/diploma/services/graphics"
 	"github.com/Oleg-Smal-git/diploma/services/instances"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
-
-	"github.com/fogleman/gg"
 )
 
 func initialize() interfaces.Renderer {
-	return graphics.NewRenderer(archivist.NewArchivist(), gg.NewContext(config.ImageWidth, config.ImageHeight), config.GraphicsWorkerPool)
+	return graphics.NewRenderer(archivist.NewArchivist(), config.ImageWidth, config.ImageHeight, config.GraphicsWorkerPool)
 }
 
 func main() {
