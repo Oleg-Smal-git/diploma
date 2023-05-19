@@ -1,6 +1,8 @@
 package instances
 
-import "time"
+import (
+	"time"
+)
 
 type (
 	// State represents an exhaustive description of physics state of the simulation.

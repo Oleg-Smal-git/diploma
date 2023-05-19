@@ -1,18 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"time"
-
-	"github.com/Oleg-Smal-git/diploma/main/config"
+	"github.com/Oleg-Smal-git/diploma/config"
 	"github.com/Oleg-Smal-git/diploma/services/archivist"
-	"github.com/Oleg-Smal-git/diploma/services/graphics"
 	"github.com/Oleg-Smal-git/diploma/services/instances"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
+	"github.com/Oleg-Smal-git/diploma/services/render"
 )
 
 func initialize() interfaces.Renderer {
-	return graphics.NewRenderer(archivist.NewArchivist(), config.ImageWidth, config.ImageHeight, config.FramesPerSecond, config.GraphicsWorkerPool)
+	return render.NewRenderer(
+		archivist.NewArchivist(config.MarshalFunctor, config.UnmarshalFunctor), config.ImageWidth, config.ImageHeight,
+		config.FramesPerSecond, config.GraphicsWorkerPool,
+	)
 }
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 		panic(err)
 	}
 	// Collect frames into aggregation.
-	if err := renderer.Collect(config.FrameDestination, fmt.Sprintf("%v/%v.avi", config.AggregationDestination, time.Now().UnixNano())); err != nil {
+	if err := renderer.Collect(config.FrameDestination, config.AggregationDestination); err != nil {
 		panic(err)
 	}
 }

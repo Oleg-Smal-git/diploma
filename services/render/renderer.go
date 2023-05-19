@@ -1,10 +1,10 @@
-package graphics
+package render
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -31,23 +31,21 @@ type Renderer struct {
 	errors                      chan error
 	fileGroup                   sync.WaitGroup
 	errorGroup                  sync.WaitGroup
-	extensionRegex              *regexp.Regexp
 }
 
 // NewRenderer instantiates a new Renderer.
 func NewRenderer(archivist interfaces.Archivist, contextWidth int, contextHeight int, fps int32, workers int) *Renderer {
 	renderer := &Renderer{
-		archivist:      archivist,
-		contexts:       make(map[int]*gg.Context, workers),
-		contextWidth:   int32(contextWidth),
-		contextHeight:  int32(contextHeight),
-		fps:            fps,
-		workers:        workers,
-		files:          nil,
-		errors:         nil,
-		fileGroup:      sync.WaitGroup{},
-		errorGroup:     sync.WaitGroup{},
-		extensionRegex: regexp.MustCompile(`(\.\w+)$`),
+		archivist:     archivist,
+		contexts:      make(map[int]*gg.Context, workers),
+		contextWidth:  int32(contextWidth),
+		contextHeight: int32(contextHeight),
+		fps:           fps,
+		workers:       workers,
+		files:         nil,
+		errors:        nil,
+		fileGroup:     sync.WaitGroup{},
+		errorGroup:    sync.WaitGroup{},
 	}
 	for i := 0; i < workers; i++ {
 		renderer.contexts[i] = gg.NewContext(contextWidth, contextHeight)
@@ -60,6 +58,12 @@ func (r *Renderer) BulkRender(sourceDirectory string, destinationDirectory strin
 	entries, err := os.ReadDir(sourceDirectory)
 	if err != nil {
 		return err
+	}
+	if _, err = os.Stat(destinationDirectory); errors.Is(err, os.ErrNotExist) {
+		err = os.Mkdir(destinationDirectory, os.ModePerm)
+		if err != nil {
+			return err
+		}
 	}
 	r.files, r.errors = make(chan string), make(chan error)
 	r.fileGroup.Add(r.workers)
@@ -77,7 +81,7 @@ func (r *Renderer) BulkRender(sourceDirectory string, destinationDirectory strin
 			for f := range r.files {
 				if err := r.consumeInput(
 					fmt.Sprintf("%v/%v", sourceDirectory, f),
-					r.extensionRegex.ReplaceAllString(fmt.Sprintf("%v/%v", destinationDirectory, f), ".jpg"),
+					fmt.Sprintf("%v/%v.%v", destinationDirectory, f, "jpg"),
 					workerIndex, template,
 				); err != nil {
 					r.errors <- err

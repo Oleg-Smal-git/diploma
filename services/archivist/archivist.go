@@ -4,8 +4,6 @@ import (
 	"os"
 
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
-
-	"github.com/vmihailenco/msgpack"
 )
 
 // Confirm that Archivist satisfies interfaces.Archivist interface.
@@ -13,25 +11,31 @@ import (
 var _ interfaces.Archivist = (*Archivist)(nil)
 
 // Archivist is an interface used to interact with disk.
-type Archivist struct{}
+type Archivist struct {
+	marshal   func(v interface{}) ([]byte, error)
+	unmarshal func(data []byte, v interface{}) error
+}
 
 // NewArchivist instantiate an Archivist.
-func NewArchivist() *Archivist {
-	return &Archivist{}
+func NewArchivist(marshal func(v interface{}) ([]byte, error), unmarshal func(data []byte, v interface{}) error) *Archivist {
+	return &Archivist{
+		marshal:   marshal,
+		unmarshal: unmarshal,
+	}
 }
 
 // LoadState sets the State from source file into target.
-func (Archivist) LoadState(source string, target interface{}) error {
+func (a *Archivist) LoadState(source string, target interface{}) error {
 	data, err := os.ReadFile(source)
 	if err != nil {
 		return err
 	}
-	return msgpack.Unmarshal(data, target)
+	return a.unmarshal(data, target)
 }
 
 // SaveState saves the source State in target file.
-func (Archivist) SaveState(target string, source interface{}) error {
-	data, err := msgpack.Marshal(source)
+func (a *Archivist) SaveState(target string, source interface{}) error {
+	data, err := a.marshal(source)
 	if err != nil {
 		return err
 	}
