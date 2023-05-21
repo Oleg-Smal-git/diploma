@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"flag"
-	"github.com/Oleg-Smal-git/diploma/config"
 	"os"
 	"time"
 
+	"github.com/Oleg-Smal-git/diploma/config"
 	"github.com/Oleg-Smal-git/diploma/services/instances"
 )
 
