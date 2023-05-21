@@ -22,7 +22,7 @@ type ECS struct {
 }
 
 // NewRunner constructs an ECS object.
-func NewRunner(stater Stater, componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System) *ECS {
+func NewRunner(stater Stater, componentRegistrar []Component, archetypesRegistrar []ComponentID, systemRegistrar []System, capacity int) *ECS {
 	ecs := ECS{
 		Chunks: make(map[ComponentID]Chunk, len(archetypesRegistrar)),
 		stater: stater,
@@ -30,7 +30,7 @@ func NewRunner(stater Stater, componentRegistrar []Component, archetypesRegistra
 	for _, a := range archetypesRegistrar {
 		chunk := Chunk{
 			Archetype: a,
-			Entities:  make([]*Entity, chunkCapacity),
+			Entities:  make([]*Entity, capacity),
 			Systems:   make([]System, 0, len(systemRegistrar)),
 		}
 		for i := range chunk.Entities {

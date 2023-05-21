@@ -14,5 +14,6 @@ func initialize() (interfaces.Runner, interfaces.Archivist) {
 	return ecs.NewRunner(
 		turbulence.NewStater(), turbulence.ComponentRegistrar,
 		turbulence.ArchetypesRegistrar, turbulence.SystemRegistrar,
+		config.StateCapacity,
 	), archivist.NewArchivist(config.MarshalFunctor, config.UnmarshalFunctor)
 }

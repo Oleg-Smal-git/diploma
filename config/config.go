@@ -1,15 +1,16 @@
 package config
 
 import (
-	"encoding/json"
+	"github.com/vmihailenco/msgpack"
+
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
 var (
 	// MarshalFunctor ...
-	MarshalFunctor = json.Marshal
+	MarshalFunctor = msgpack.Marshal
 	// UnmarshalFunctor ...
-	UnmarshalFunctor = json.Unmarshal
+	UnmarshalFunctor = msgpack.Unmarshal
 	// StateSource is a path to initial state source file.
 	StateSource = "./buff/start"
 	// StateDestination is a directory to which intermediate states are saved.
@@ -24,7 +25,7 @@ var (
 	CPUProfileDestination = "./buff/cpu-profile"
 	// StateCapacity describes the max amount of entities to be stored in state.
 	// Used to pre-allocate memory during initialization.
-	StateCapacity = 100000
+	StateCapacity = 2000
 	// FrameCap is the amount of frames after which the simulation stops.
 	FrameCap = 3600
 	// FrameDuration is the amount of imaginary time that a frame lasts.
