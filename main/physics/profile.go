@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -39,7 +38,6 @@ func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *inst
 	for i := 0; i < config.FrameCap; i++ {
 		runner.Next()
 		runner.Freeze(state)
-		fmt.Println(*state)
 		time.Write([]byte(
 			strconv.FormatInt(state.LastFrameDuration.Nanoseconds(), 10) + "\n",
 		))

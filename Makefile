@@ -13,7 +13,6 @@ __build_export_ecs:
 	@go build -o ./bin/physics -tags BUILD_ECS,BUILD_EXPORT ./main/physics
 
 __build_profile_ecs:
-	@export GOGC=off
 	@go build -o ./bin/physics -tags BUILD_ECS,BUILD_PROFILE ./main/physics
 
 __build_export_oop:

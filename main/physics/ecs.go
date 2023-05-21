@@ -3,6 +3,8 @@
 package main
 
 import (
+	"runtime/debug"
+
 	"github.com/Oleg-Smal-git/diploma/config"
 	"github.com/Oleg-Smal-git/diploma/services/archivist"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
@@ -11,6 +13,7 @@ import (
 )
 
 func initialize() (interfaces.Runner, interfaces.Archivist) {
+	debug.SetGCPercent(0) // Disable automatic garbage collection.
 	return ecs.NewRunner(
 		turbulence.NewStater(), turbulence.ComponentRegistrar,
 		turbulence.ArchetypesRegistrar, turbulence.SystemRegistrar,
