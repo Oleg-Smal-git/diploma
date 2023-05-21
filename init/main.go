@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math"
 	"math/rand"
@@ -11,6 +12,14 @@ import (
 )
 
 func main() {
+	overrideN := flag.Int("overrideN", 0, "")
+	flag.Parse()
+	var n int
+	if *overrideN != 0 {
+		n = *overrideN
+	} else {
+		n = defaultN
+	}
 	arch := archivist.NewArchivist(config.MarshalFunctor, config.UnmarshalFunctor)
 	state := instances.State{
 		Balls:             make([]*instances.Ball, 0),
