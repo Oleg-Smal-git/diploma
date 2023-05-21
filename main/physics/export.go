@@ -4,12 +4,20 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/Oleg-Smal-git/diploma/config"
 	"github.com/Oleg-Smal-git/diploma/services/instances"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
 func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *instances.State) {
+	if _, err := os.Stat(config.StateDestination); errors.Is(err, os.ErrNotExist) {
+		err = os.Mkdir(config.StateDestination, os.ModePerm)
+		if err != nil {
+			panic("initialization failure: " + err.Error())
+		}
+	}
+	// Copy initial state as first result.
 	if err := archivist.SaveState(fmt.Sprintf("%v/%v", config.StateDestination, 0), state); err != nil {
 		panic("archivist failure: " + err.Error())
 	}

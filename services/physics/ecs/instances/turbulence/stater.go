@@ -22,14 +22,7 @@ type Stater struct {
 
 // NewStater instantiates a turbulence stater.
 func NewStater() *Stater {
-	return &Stater{
-		activeBuffer:    new(ComponentActive),
-		rigidBodyBuffer: new(ComponentRigidBody),
-		boundaryBuffer:  new(ComponentBoundary),
-		positionBuffer:  new(ComponentPosition),
-		velocityBuffer:  new(ComponentVelocity),
-		ballBuffer:      new(instances.Ball),
-	}
+	return &Stater{}
 }
 
 // Freeze exports the current state of the simulation.
@@ -54,6 +47,7 @@ func (s *Stater) Freeze(ecs *ecs.ECS, state interface{}) {
 		s.ballBuffer.X, s.ballBuffer.Y = s.positionBuffer.X, s.positionBuffer.Y
 		s.ballBuffer.SpeedX, s.ballBuffer.SpeedY = s.velocityBuffer.X, s.velocityBuffer.Y
 	}
+	castState.LastFrameDuration = ecs.LastFrameDuration
 }
 
 // Restore sets the State and Globals of the simulation to one provided.

@@ -23,11 +23,13 @@ var (
 	MemoryProfileDestination = "./buff/memory-profile"
 	// CPUProfileDestination is a file to which cpu profile is written.
 	CPUProfileDestination = "./buff/cpu-profile"
+	// TimeProfileDestination is a file to which frame evaluation times is written.
+	TimeProfileDestination = "./buff/time-profile"
 	// StateCapacity describes the max amount of entities to be stored in state.
 	// Used to pre-allocate memory during initialization.
 	StateCapacity = 2000
 	// FrameCap is the amount of frames after which the simulation stops.
-	FrameCap = 3600
+	FrameCap = 100
 	// FrameDuration is the amount of imaginary time that a frame lasts.
 	// for simplicity's sake, all the numbers here are calibrated around
 	// this variable being evaluated in seconds.

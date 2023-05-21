@@ -15,10 +15,10 @@ var _ interfaces.Runner = (*ECS)(nil)
 type ECS struct {
 	Chunks             map[ComponentID]Chunk
 	Globals            *interfaces.Globals
+	LastFrameDuration  time.Duration
 	stater             Stater
 	lastFrameStartTime time.Time
 	lastFrameEndTime   time.Time
-	lastFrameDuration  time.Duration
 }
 
 // NewRunner constructs an ECS object.
@@ -68,7 +68,7 @@ func (r *ECS) Next() {
 		}
 	}
 	r.lastFrameEndTime = time.Now()
-	r.lastFrameDuration = r.lastFrameEndTime.Sub(r.lastFrameStartTime)
+	r.LastFrameDuration = r.lastFrameEndTime.Sub(r.lastFrameStartTime)
 }
 
 // Freeze exports the current state of the simulation.

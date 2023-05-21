@@ -5,5 +5,5 @@ const (
 	yMin, yMax = 0, 1024
 	speed      = 200.0
 	radius     = .1
-	n          = 2000
+	n          = 100
 )
