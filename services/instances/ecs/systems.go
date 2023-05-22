@@ -1,10 +1,10 @@
-package turbulence
+package ecs
 
 import (
 	"math"
 
+	"github.com/Oleg-Smal-git/diploma/services/ecs"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
-	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
 )
 
 // SystemRegistrar wraps all systems to be queried during preemptive archivist allocation.

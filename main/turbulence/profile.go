@@ -8,13 +8,13 @@ import (
 	"strconv"
 
 	"github.com/Oleg-Smal-git/diploma/config"
-	"github.com/Oleg-Smal-git/diploma/services/instances"
+	"github.com/Oleg-Smal-git/diploma/services/instances/turbulence"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 
 	"runtime/pprof"
 )
 
-func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *instances.State) {
+func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *turbulence.State) {
 	var (
 		memory, cpu, time *os.File
 		err               error

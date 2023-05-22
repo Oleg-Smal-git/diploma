@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/Oleg-Smal-git/diploma/config"
 	"github.com/Oleg-Smal-git/diploma/services/archivist"
-	"github.com/Oleg-Smal-git/diploma/services/instances"
+	"github.com/Oleg-Smal-git/diploma/services/instances/turbulence"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 	"github.com/Oleg-Smal-git/diploma/services/render"
 )
@@ -19,7 +19,7 @@ func main() {
 	// Initialize renderer.
 	renderer := initialize()
 	// Render individual frames.
-	if err := renderer.BulkRender(config.StateDestination, config.FrameDestination, &instances.State{}); err != nil {
+	if err := renderer.BulkRender(config.StateDestination, config.FrameDestination, &turbulence.State{}); err != nil {
 		panic(err)
 	}
 	// Collect frames into aggregation.

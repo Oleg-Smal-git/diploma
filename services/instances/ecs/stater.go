@@ -1,9 +1,9 @@
-package turbulence
+package ecs
 
 import (
-	"github.com/Oleg-Smal-git/diploma/services/instances"
+	"github.com/Oleg-Smal-git/diploma/services/ecs"
+	"github.com/Oleg-Smal-git/diploma/services/instances/turbulence"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
-	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
 )
 
 // Confirm that Stater satisfies interfaces.Stater interface.
@@ -17,7 +17,7 @@ type Stater struct {
 	boundaryBuffer  *ComponentBoundary
 	positionBuffer  *ComponentPosition
 	velocityBuffer  *ComponentVelocity
-	ballBuffer      *instances.Ball
+	ballBuffer      *turbulence.Ball
 }
 
 // NewStater instantiates a turbulence stater.
@@ -27,7 +27,7 @@ func NewStater() *Stater {
 
 // Freeze exports the current state of the simulation.
 func (s *Stater) Freeze(ecs *ecs.ECS, state interface{}) {
-	castState, success := state.(*instances.State)
+	castState, success := state.(*turbulence.State)
 	if !success {
 		panic("invalid destination state type")
 	}
@@ -52,7 +52,7 @@ func (s *Stater) Freeze(ecs *ecs.ECS, state interface{}) {
 
 // Restore sets the State and Globals of the simulation to one provided.
 func (s *Stater) Restore(ecs *ecs.ECS, state interface{}, globals *interfaces.Globals) {
-	castState, success := state.(*instances.State)
+	castState, success := state.(*turbulence.State)
 	if !success {
 		panic("invalid source state type")
 	}

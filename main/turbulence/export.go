@@ -8,11 +8,11 @@ import (
 	"os"
 
 	"github.com/Oleg-Smal-git/diploma/config"
-	"github.com/Oleg-Smal-git/diploma/services/instances"
+	"github.com/Oleg-Smal-git/diploma/services/instances/turbulence"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
-func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *instances.State) {
+func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *turbulence.State) {
 	if _, err := os.Stat(config.StateDestination); errors.Is(err, os.ErrNotExist) {
 		err = os.Mkdir(config.StateDestination, os.ModePerm)
 		if err != nil {

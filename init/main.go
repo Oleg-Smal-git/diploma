@@ -8,7 +8,7 @@ import (
 
 	"github.com/Oleg-Smal-git/diploma/config"
 	"github.com/Oleg-Smal-git/diploma/services/archivist"
-	"github.com/Oleg-Smal-git/diploma/services/instances"
+	"github.com/Oleg-Smal-git/diploma/services/instances/turbulence"
 )
 
 func main() {
@@ -21,14 +21,14 @@ func main() {
 		n = defaultN
 	}
 	arch := archivist.NewArchivist(config.MarshalFunctor, config.UnmarshalFunctor)
-	state := instances.State{
-		Balls:             make([]*instances.Ball, 0),
+	state := turbulence.State{
+		Balls:             make([]*turbulence.Ball, 0),
 		LastFrameDuration: 0,
 	}
 	r := int(math.Ceil(math.Sqrt(float64(n))))
 	for i := 0; i < n; i++ {
 		col, row := i%r, i/r
-		state.Balls = append(state.Balls, &instances.Ball{
+		state.Balls = append(state.Balls, &turbulence.Ball{
 			X:      float64(xMin + (xMax-xMin)*(col+1)/(r+1)),
 			Y:      float64(yMin + (yMax-yMin)*(row+1)/(r+1)),
 			Radius: radius,

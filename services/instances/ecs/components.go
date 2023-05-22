@@ -1,7 +1,7 @@
-package turbulence
+package ecs
 
 import (
-	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
+	"github.com/Oleg-Smal-git/diploma/services/ecs"
 )
 
 // ComponentRegistrar wraps all components to be queried during preemptive archivist allocation.

@@ -1,4 +1,4 @@
-package instances
+package turbulence
 
 import (
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"

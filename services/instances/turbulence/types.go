@@ -1,4 +1,4 @@
-package instances
+package turbulence
 
 import (
 	"time"

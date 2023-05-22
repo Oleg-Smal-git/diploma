@@ -1,7 +1,7 @@
-package turbulence
+package ecs
 
 import (
-	"github.com/Oleg-Smal-git/diploma/services/physics/ecs"
+	"github.com/Oleg-Smal-git/diploma/services/ecs"
 )
 
 // ArchetypesRegistrar contains all known archetypes of simulation objects.
