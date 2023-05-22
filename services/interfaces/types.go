@@ -28,8 +28,8 @@ type (
 	Globals struct {
 		// FrameSimulationTime is the duration of an atomic simulation step.
 		FrameSimulationTime float64
-		// Boundaries = walls :D
-		Boundaries struct {
+		// Boundary = walls :D
+		Boundary struct {
 			MinX, MaxX, MinY, MaxY float64
 		}
 	}

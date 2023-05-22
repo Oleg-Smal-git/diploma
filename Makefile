@@ -6,7 +6,12 @@ render_oop: __build_export_oop __build_render __turbulence __render
 
 profile_oop: __build_profile_oop __turbulence __profile
 
-__build_initialize:
+__init:
+	@make __build_init
+	@mkdir -p ./buff
+	@./bin/init
+
+__build_init:
 	@go build -o ./bin/init ./init
 
 __build_export_ecs:
@@ -25,16 +30,10 @@ __build_render:
 	@go build -o ./bin/graphics ./main/render
 
 __turbulence:
-	@make __init
 	@./bin/turbulence
 
 __render:
 	@./bin/graphics
-
-__init:
-	@make __build_initialize
-	@mkdir -p ./buff
-	@./bin/init
 
 __profile:
 	@go tool pprof -png ./bin/turbulence ./buff/cpu-profile > ./buff/cpu-profile.png

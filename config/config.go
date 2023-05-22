@@ -1,9 +1,9 @@
 package config
 
 import (
-	"github.com/vmihailenco/msgpack"
-
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
+
+	"github.com/vmihailenco/msgpack"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 	// CPUProfileDestination is a file to which cpu profile is written.
 	CPUProfileDestination = "./buff/cpu-profile"
 	// TimeProfileDestination is a file to which frame evaluation times is written.
-	TimeProfileDestination = "./buff/time-profile"
+	TimeProfileDestination = "./buff/time-profile.txt"
 	// StateCapacity describes the max amount of entities to be stored in state.
 	// Used to pre-allocate memory during initialization.
 	StateCapacity = 2000
@@ -47,7 +47,7 @@ var (
 var (
 	Globals = interfaces.Globals{
 		FrameSimulationTime: FrameDuration,
-		Boundaries: struct{ MinX, MaxX, MinY, MaxY float64 }{
+		Boundary: struct{ MinX, MaxX, MinY, MaxY float64 }{
 			MinX: 0,
 			MaxX: float64(ImageWidth),
 			MinY: 0,

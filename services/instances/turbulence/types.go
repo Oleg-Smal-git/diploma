@@ -15,6 +15,7 @@ type (
 
 	// Ball goes bounce :)
 	Ball struct {
+		// These properties exhaustively describes the state of the ball.
 		X, Y           float64
 		Radius         float64
 		SpeedX, SpeedY float64

@@ -6,7 +6,7 @@ import (
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
 )
 
-// Confirm that Stater satisfies interfaces.Stater interface.
+// Confirm that Stater satisfies ecs.Stater interface.
 // This will throw a compile error otherwise.
 var _ ecs.Stater = (*Stater)(nil)
 
@@ -73,7 +73,7 @@ func (s *Stater) Restore(ecs *ecs.ECS, state interface{}, globals *interfaces.Gl
 		s.activeBuffer.Active = true
 		s.rigidBodyBuffer.Size = s.ballBuffer.Radius
 		s.boundaryBuffer.MinX, s.boundaryBuffer.MaxX, s.boundaryBuffer.MinY, s.boundaryBuffer.MaxY =
-			globals.Boundaries.MinX, globals.Boundaries.MaxX, globals.Boundaries.MinY, globals.Boundaries.MaxY
+			globals.Boundary.MinX, globals.Boundary.MaxX, globals.Boundary.MinY, globals.Boundary.MaxY
 		s.positionBuffer.X, s.positionBuffer.Y = s.ballBuffer.X, s.ballBuffer.Y
 		s.velocityBuffer.X, s.velocityBuffer.Y = s.ballBuffer.SpeedX, s.ballBuffer.SpeedY
 	}
