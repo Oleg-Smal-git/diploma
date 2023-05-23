@@ -1,16 +1,15 @@
 package config
 
 import (
+	"encoding/json"
 	"github.com/Oleg-Smal-git/diploma/services/interfaces"
-
-	"github.com/vmihailenco/msgpack"
 )
 
 var (
 	// MarshalFunctor ...
-	MarshalFunctor = msgpack.Marshal
+	MarshalFunctor = json.Marshal
 	// UnmarshalFunctor ...
-	UnmarshalFunctor = msgpack.Unmarshal
+	UnmarshalFunctor = json.Unmarshal
 	// StateSource is a path to initial state source file.
 	StateSource = "./buff/start"
 	// StateDestination is a directory to which intermediate states are saved.

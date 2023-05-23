@@ -61,6 +61,7 @@ func (c *Collider) Update() {
 			if j <= i {
 				continue // Skip already evaluated pairs and self.
 			}
+			// Check for collision.
 			deltaX, deltaY := ej.X-ei.X, ej.Y-ei.Y
 			delta := math.Sqrt(math.Pow(deltaX, 2) + math.Pow(deltaY, 2))
 			overlap := ei.Radius + ej.Radius - delta
@@ -72,7 +73,7 @@ func (c *Collider) Update() {
 			deltaSpeedX, deltaSpeedY := ei.SpeedX-ej.SpeedX, ei.SpeedY-ej.SpeedY
 			deltaX, deltaY = deltaX/delta, deltaY/delta
 			correctionX, correctionY := deltaX*overlap/2, deltaY*overlap/2
-			momentumExchange := deltaX*deltaSpeedX + deltaSpeedY*deltaSpeedY
+			momentumExchange := deltaX*deltaSpeedX + deltaY*deltaSpeedY
 			speedExchangeX, speedExchangeY := momentumExchange*deltaX, momentumExchange*deltaY
 
 			// Perform the collision.

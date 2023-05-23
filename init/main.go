@@ -21,7 +21,8 @@ func main() {
 		n = defaultN
 	}
 	area := float64((yMax - yMin) * (xMax - xMin))
-	radius := math.Sqrt(1. / (4 * math.Sqrt(2) * speed * relativeFreeRun * float64(n) / area))
+	density := float64(n) / area
+	radius := 1. / (4 * math.Sqrt(2) * speed * freeRun * density)
 	arch := archivist.NewArchivist(config.MarshalFunctor, config.UnmarshalFunctor)
 	state := turbulence.State{
 		Balls:             make([]*turbulence.Ball, 0),

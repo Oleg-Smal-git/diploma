@@ -27,10 +27,10 @@ __build_profile_ecs:
 	@go build -o ./bin/turbulence -tags BUILD_ECS,BUILD_PROFILE ./main/turbulence
 
 __build_export_oop:
-	@go build -o ./bin/turbulence -tags BUILD_ECS,BUILD_EXPORT ./main/turbulence
+	@go build -o ./bin/turbulence -tags BUILD_OOP,BUILD_EXPORT ./main/turbulence
 
 __build_profile_oop:
-	@go build -o ./bin/turbulence -tags BUILD_ECS,BUILD_PROFILE ./main/turbulence
+	@go build -o ./bin/turbulence -tags BUILD_OOP,BUILD_PROFILE ./main/turbulence
 
 __build_render:
 	@go build -o ./bin/graphics ./main/render
