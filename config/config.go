@@ -27,7 +27,7 @@ var (
 	TimeProfileDestination = "./buff/time-profile.txt"
 	// StateCapacity describes the max amount of entities to be stored in state.
 	// Used to pre-allocate memory during initialization.
-	StateCapacity = 2000
+	StateCapacity = 10000
 	// FrameCap is the amount of frames after which the simulation stops.
 	FrameCap = 100
 	// FrameDuration is the amount of imaginary time that a frame lasts.

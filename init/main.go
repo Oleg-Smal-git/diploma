@@ -20,17 +20,19 @@ func main() {
 	} else {
 		n = defaultN
 	}
+	area := float64((yMax - yMin) * (xMax - xMin))
+	radius := math.Sqrt(1. / (4 * math.Sqrt(2) * speed * relativeFreeRun * float64(n) / area))
 	arch := archivist.NewArchivist(config.MarshalFunctor, config.UnmarshalFunctor)
 	state := turbulence.State{
 		Balls:             make([]*turbulence.Ball, 0),
 		LastFrameDuration: 0,
 	}
-	r := int(math.Ceil(math.Sqrt(float64(n))))
+	rows := int(math.Ceil(math.Sqrt(float64(n))))
 	for i := 0; i < n; i++ {
-		col, row := i%r, i/r
+		col, row := i%rows, i/rows
 		state.Balls = append(state.Balls, &turbulence.Ball{
-			X:      float64(xMin + (xMax-xMin)*(col+1)/(r+1)),
-			Y:      float64(yMin + (yMax-yMin)*(row+1)/(r+1)),
+			X:      float64(xMin + (xMax-xMin)*(col+1)/(rows+1)),
+			Y:      float64(yMin + (yMax-yMin)*(row+1)/(rows+1)),
 			Radius: radius,
 			SpeedX: 2 * speed * (rand.Float64() - 0.5),
 			SpeedY: 2 * speed * (rand.Float64() - 0.5),

@@ -24,6 +24,7 @@ func solve(runner interfaces.Runner, archivist interfaces.Archivist, state *turb
 		panic("archivist failure: " + err.Error())
 	}
 	for i := 0; i < config.FrameCap; i++ {
+		fmt.Println(i)
 		runner.Next()
 		runner.Freeze(state)
 		if err := archivist.SaveState(fmt.Sprintf("%v/%v", config.StateDestination, i+1), *state); err != nil {

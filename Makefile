@@ -6,6 +6,12 @@ render_oop: __build_export_oop __build_render __turbulence __render
 
 profile_oop: __build_profile_oop __turbulence __profile
 
+test_ecs:
+	@python3 ./test/main.py --model=ecs
+
+test_oop:
+	@python3 ./test/main.py --model=oop
+
 __init:
 	@make __build_init
 	@mkdir -p ./buff
